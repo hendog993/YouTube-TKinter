@@ -1,8 +1,10 @@
 from tkinter import * 
 
 root = Tk()
-root.title("Flashcard game")
-root.geometry('700x500')
+root.title("Flashcard Game")
+root.geometry("700x500")
+
+# Create states and capital dictionary 
 
 states_and_capitals = { 
     'Alabama': 'Montgomery',
@@ -43,7 +45,7 @@ states_and_capitals = {
     'Oklahoma': 'Oklahoma City',
     'Oregon': 'Salem',
     'Pennsylvania': 'Harrisburg',
-    'Rhoda Island': 'Providence',
+    'Rhode Island': 'Providence',
     'South Carolina': 'Columbia',
     'South Dakoda': 'Pierre',
     'Tennessee': 'Nashville',
@@ -57,24 +59,32 @@ states_and_capitals = {
     'Wyoming': 'Cheyenne'  
 } 
 
+# Create listbox 
 listbox1 = Listbox(root)
-for x , y in enumerate(states_and_capitals):
+for x, y in enumerate(states_and_capitals):
     listbox1.insert(x+1, y)
 listbox1.pack(anchor='w')
 
-
 def flash():
+    # Delete previous entry in entry widget
+    # get state from the listbox
+    # insert capital into entry widget 
     entry1.delete(0, 'end')
     state = listbox1.get(ANCHOR)
     entry1.insert(0, states_and_capitals[state])
     pass 
 
+# Create button to fetch state from selected item
 button1 = Button(root, text="Flash", command=flash)
 button1.pack()
 
+
+# Create entry to place capital (answer)
 label1 = Label(root, text="Answer").pack()
-entry1 = Entry(root,width=20)
+entry1 = Entry(root, width = 20)
 entry1.pack()
+
+
 
 
 root.mainloop()
