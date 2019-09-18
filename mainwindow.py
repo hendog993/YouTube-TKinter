@@ -227,7 +227,7 @@ class Window:
 	
 	def edit_redo(self):
 		self.textspace.edit_redo()
-		return None 
+		return None # 
 	
 	def edit_search(self):
 		coming_soon()
