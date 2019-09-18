@@ -85,6 +85,7 @@ class Window:
 			with open(file_name.get() + '.txt', 'w+') as file:
 				file.write(file_contents)
 				file.close()
+				print("File saved successfully")
 			return None
 		
 		Label(save_gui, text="File Name: ").grid(row=0, column=0)
@@ -180,14 +181,22 @@ class Window:
 				 then inserts the new text into the widget with the updated font.
 	"""
 	
-	def change_font(self, font_tuple):
-		file_text = self.textspace.get("0.0", END)
-		self.textspace.delete("0.0", END)
-		self.textspace.insert()
+	# def change_font(self):
+	#
+	# 	# file_text = self.textspace.get("0.0", END)
+	# 	# self.textspace.delete("0.0", END)
+	# 	# self.textspace.insert()
 	
 	def change_font_window(self):
 		new_font_window = Tk()
 		new_font_window.geometry('600x400')
+		
+		def change_font():
+			font1 = font_listbox.get(ACTIVE )
+			fontsize = tk_font_sizes.get()
+			self.textspace.configure(font=(font1, int(fontsize)))
+			return None
+		
 		
 		font_listbox = Listbox(new_font_window)
 		for x, y in enumerate(self.list_of_fonts):
@@ -199,7 +208,7 @@ class Window:
 		list_of_font_sizes = OptionMenu(new_font_window, tk_font_sizes, "8", "10", "12", "14", "22", "30", "40")
 		list_of_font_sizes.pack()
 		
-		submit_button = Button(new_font_window, text="Submit", command=self.change_font)
+		submit_button = Button(new_font_window, text="Submit", command=change_font)
 		submit_button.pack()
 		new_font_window.mainloop()
 		return None
