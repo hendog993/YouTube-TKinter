@@ -1,5 +1,6 @@
 from tkinter import *
-import os
+from os import path as ospath 
+
 
 _root = Tk()
 
@@ -9,15 +10,25 @@ software_information = {
 	'System Version ': 1.01
 }
 
-
 # TODO add executable functionality instead of just a script
 # TODO add path functionality to save and load methods
+# TODO add new class for subwindows, possibly allow removal of cut and paste code.
+# TODO add keybindings for event listener shortcuts 
 
 def main():
 	gui = Window(_root)
 	gui.root.mainloop()
+ 
 	return None
 
+def check_if_file_exists(file_name):
+	if ospath.exists(file_name+'.txt'):
+		return 1
+	return 0
+
+def coming_soon():
+	PopupWindowAlert("Sorry!","This functionality coming soon!")
+	return None 
 
 class Window:
 	list_of_fonts = ['Times', 'Calibri', 'Comic Sans', "Helvetica"]
@@ -46,7 +57,9 @@ class Window:
 		self.editMenu = Menu(self.menu, tearoff=0)
 		self.menu.add_cascade(label="Edit", menu=self.editMenu)
 		self.editMenu.add_command(label="Select All", command=self.select_all)
+		self.editMenu.add_command(label="Search", command=self.edit_search)
 		self.editMenu.add_command(label="Undo", command=self.edit_undo)
+		self.editMenu.add_command(label='Redo', command=self.edit_redo)
 		
 		# Format dropdown menu
 		self.formatMenu = Menu(self.menu, tearoff=0)
@@ -71,7 +84,8 @@ class Window:
 	Nested Method: save_new_file
 	Description: Opens a popup window that allows the user to save a file. Uses the open block to save
 				 and create a new file.
-	TODO: if the file already exists, use w+ mode.
+	TODO: if the file already exists, use w+ mode. Need to determine which files need global attributes. 
+		  Also need to determine how to pass arguments away from the window class to global functions. 
 	Return: None
 	"""
 	
@@ -80,14 +94,44 @@ class Window:
 		save_gui.geometry('600x400')
 		file_contents = self.textspace.get(0.0, END)
 		
-		def save_new_file(text=file_contents):
-			# This method doesn't have to be in the class. Could be global.
+		def save_new_file():
+			if check_if_file_exists(file_name.get()) == 1:  # If the file DOES exist already 
+				
+				def submit_button():
+					with open(file_name.get() + '.txt', 'w+') as file:
+						file.write(file_contents)
+						file.close()
+						print("File saved successfully")
+					root.destroy()
+					pass 
+					
+				def cancel_button():
+					print("Cancelled")
+					root.destroy()
+					return 0
+					pass 
+			
+				root = Tk()
+				root.geometry('300x300')
+				root.title("Save")
+				Label(root, text="File Already Exists. Do you want to overwrite?").pack()
+				
+				status_button = Button(root, text="Okay", command= submit_button)
+				status_button.pack()
+				
+				cancel_button = Button(root, text="Cancel", command= cancel_button)
+				cancel_button.pack()
+				root.mainloop()
+				# If yes, then continue. If no, return 0 and exit window. 
+				
 			with open(file_name.get() + '.txt', 'w+') as file:
 				file.write(file_contents)
 				file.close()
 				print("File saved successfully")
 			return None
 		
+		
+		# Skeleton
 		Label(save_gui, text="File Name: ").grid(row=0, column=0)
 		file_name = Entry(save_gui, width=40)
 		file_name.grid(row=0, column=1)
@@ -119,7 +163,7 @@ class Window:
 			self.textspace.delete(0.0, END)
 			try:
 				with open(file_name.get() + '.txt', 'r') as file:
-					prompt = str(file_name.get())
+					prompt = str(file_name.get())   
 					message = "File " + prompt + " was loaded successfully. "
 					self.textspace.insert(0.0, file.read())
 					status_window.insert(0.0, message)
@@ -170,9 +214,19 @@ class Window:
 		return None
 	
 	def edit_undo(self):
-		pass
+		self.textspace.edit_undo()
+		return None 
+	
+	def edit_redo(self):
+		self.textspace.edit_redo()
+		return None 
+	
+	def edit_search(self):
+		coming_soon()
+		return None 
 	
 	def add_line_numbers(self):
+		coming_soon()
 		pass
 	
 	"""
@@ -180,12 +234,6 @@ class Window:
 	Description: Creates a popup window. Grabs all the text from the textbot widget, clears the textbox widget,
 				 then inserts the new text into the widget with the updated font.
 	"""
-	
-	# def change_font(self):
-	#
-	# 	# file_text = self.textspace.get("0.0", END)
-	# 	# self.textspace.delete("0.0", END)
-	# 	# self.textspace.insert()
 	
 	def change_font_window(self):
 		new_font_window = Tk()
@@ -214,22 +262,61 @@ class Window:
 		return None
 	
 	def change_highlighted_text(self):
+		coming_soon()
 		pass
 	
 	def change_margins(self):
+		coming_soon()
 		pass
 	
 	def check_spelling(self):
+		coming_soon()
 		pass
 	
 	def select_all(self):
+		coming_soon()
 		pass
 	
+	
+	"""
+	Method: exit
+	Description: Exits the main window and prompts the user to save the file. 
+	"""
 	def exit(self):
 		self.root.destroy()
-		pass
+		return None 
+	
 	
 	pass
+	
+	
+class PopupWindowAlert:
+
+
+	def submit_button(self):
+		self.root.destroy()
+		return 1
+		
+	def cancel_button(self):
+		self.root.destroy()
+		return 0
+
+		
+	def __init__(self, title, message):
+		self.root = Tk()
+		self.root.geometry('300x300')
+		self.root.title(title)
+		Label(self.root, text=message).pack()
+		
+		self.status_button = Button(self.root, text="Okay", command= self.submit_button)
+		self.status_button.pack()
+		
+		self.cancel_button = Button(self.root, text="Cancel", command= self.cancel_button)
+		self.cancel_button.pack()
+		self.root.mainloop()
+		pass 
+
+	pass 
 
 
 if __name__ == "__main__":
