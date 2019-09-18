@@ -1,6 +1,6 @@
 from tkinter import *
 from os import path as ospath 
-
+ 
 
 _root = Tk()
 
@@ -12,14 +12,14 @@ software_information = {
 
 # TODO add executable functionality instead of just a script
 # TODO add path functionality to save and load methods
-# TODO add new class for subwindows, possibly allow removal of cut and paste code.
 # TODO add keybindings for event listener shortcuts 
 
 def main():
 	gui = Window(_root)
 	gui.root.mainloop()
- 
-	return None
+	return None 
+	
+	
 
 def check_if_file_exists(file_name):
 	if ospath.exists(file_name+'.txt'):
@@ -71,7 +71,7 @@ class Window:
 		# Tools dropdown menu
 		self.toolsMenu = Menu(self.menu, tearoff=0)
 		self.menu.add_cascade(label="Tools", menu=self.toolsMenu)
-		self.toolsMenu.add_command(label="Spell")
+		self.toolsMenu.add_command(label="Spell", command=self.check_spelling)
 		
 		# Help dropdown menu
 		self.helpMenu = Menu(self.menu, tearoff=0)
@@ -80,12 +80,15 @@ class Window:
 		self.helpMenu.add_command(label="Tutorial", command=self.tutorial_window)
 	
 	"""
-	Method: save_file
+	Method: save_file_window
 	Nested Method: save_new_file
-	Description: Opens a popup window that allows the user to save a file. Uses the open block to save
-				 and create a new file.
-	TODO: if the file already exists, use w+ mode. Need to determine which files need global attributes. 
-		  Also need to determine how to pass arguments away from the window class to global functions. 
+	Description:
+		Creates a new window allowing user to declare file name to save. If a similar file name already 
+		exists, the user is asked if the previous file is desired to be overwritten. If the user selects no,
+		the nested function will return 0 and not proceed to the open block. If the user selects yes, the 
+		open block will start and the new file will be saved. If a similar file is not detected, the open
+		block will proceed as normal. After the file is saved, the save_gui is destroyed, and a popup appears
+		notifying the user that the file was successfully saved. 
 	Return: None
 	"""
 	
@@ -99,18 +102,19 @@ class Window:
 				
 				def submit_button():
 					with open(file_name.get() + '.txt', 'w+') as file:
+					# Saves the file even though the file already exists. Seems inefficient. 
 						file.write(file_contents)
 						file.close()
-						print("File saved successfully")
-					root.destroy()
-					pass 
+						root.destroy()
+						save_gui.destroy()
+						PopupWindowAlert("Congrats!", "File was saved successfully!")
+					return 0  
 					
 				def cancel_button():
 					print("Cancelled")
 					root.destroy()
-					return 0
-					pass 
-			
+					return 0 
+					 
 				root = Tk()
 				root.geometry('300x300')
 				root.title("Save")
@@ -127,10 +131,10 @@ class Window:
 			with open(file_name.get() + '.txt', 'w+') as file:
 				file.write(file_contents)
 				file.close()
-				print("File saved successfully")
+				save_gui.destroy()
+				PopupWindowAlert("Congrats!", "File was saved successfully!")
 			return None
-		
-		
+				
 		# Skeleton
 		Label(save_gui, text="File Name: ").grid(row=0, column=0)
 		file_name = Entry(save_gui, width=40)
@@ -150,8 +154,12 @@ class Window:
 	
 	"""
 	Method: open_file
-	Description: Loads a file based on the default path. Uses open block to insert text into main textbox.
-	Return: None
+	Description: 
+		Loads a file based on the default path. Uses open block to insert text into main textbox. First deletes 
+		the old contents of the 
+		
+		! Needs to prompt the user to save the file is not saved already. 
+
 	"""
 	
 	def open_file(self):
@@ -292,7 +300,6 @@ class Window:
 	
 class PopupWindowAlert:
 
-
 	def submit_button(self):
 		self.root.destroy()
 		return 1
@@ -321,3 +328,4 @@ class PopupWindowAlert:
 
 if __name__ == "__main__":
 	main()
+	
